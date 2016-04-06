@@ -100,6 +100,9 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
 <section title="Possible issues">
   <t>TODO support of DNAME (there is certainly a Geoff Huston survey
   of DNAMEs in the wild).</t>
+  <t>TODO interaction with DNSSEC. See <eref
+  target="https://mailarchive.ietf.org/arch/msg/dnsop/JsPNz66aQE3-r3toawCV_ajoCNo">George
+  Michaelson's message</eref>.</t>
 </section>
 
 <section title="IANA Considerations">
