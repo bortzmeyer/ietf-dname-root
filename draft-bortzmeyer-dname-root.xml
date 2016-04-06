@@ -25,7 +25,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.tldr-sutld-ps">
 ]>
 
-<rfc docName="draft-bortzmeyer-dname-root-00"
+<rfc docName="draft-bortzmeyer-dname-root-01-BETA"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -36,7 +36,7 @@ delegation of special-use TLDs</title>
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="April" year="2016"/>
+<date month="TODO" year="TODO"/>
 <abstract>
 <t>This documents asks IANA to add DNAME records in the DNS root for
 TLDs which are in the Special-Use Domain Names registry, in order to ensure they receive an
@@ -60,7 +60,7 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
     talks about these junk requests.</t>
      <t>Some of these names, and specially one of the biggest
      offenders, .local (<xref target="RFC6762"/>), are registered in
-     the Special-Use Domain Names registry of <xref
+     the <eref target="http://www.iana.org/assignments/special-use-domain-names/special-use-domain-names.xml">Special-Use Domain Names registry</eref> of <xref
      target="RFC6761"/>. They are obvious candidates for a delegation to
      the sink.</t>
      <t>It is proposed to use the new AS112, the one described by
@@ -75,7 +75,7 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
 
   <section anchor="rules" title="Rules">
     <t>Every TLD (<xref target="RFC7719"/>, section 2) which is in the
-    Special-Use Domain Names registry (<xref target="RFC6761"/>)
+    <eref target="http://www.iana.org/assignments/special-use-domain-names/special-use-domain-names.xml">Special-Use Domain Names registry</eref> (<xref target="RFC6761"/>)
     SHOULD be delegated by IANA through a DNAME to empty.as112.arpa as
     described in <xref target="RFC7535"/> if and only if the
     registration of these TLD say that resolvers should not or must
@@ -99,8 +99,9 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
 
 <section title="Possible issues">
   <t>TODO support of DNAME (there is certainly a Geoff Huston survey
-  of DNAMEs in the wild).</t>
-  <t>TODO interaction with DNSSEC. See <eref
+  of DNAMEs in the wild; there is also appendix A of <xref target="RFC7535"/>).</t>
+  <t>TODO interaction with DNSSEC. The DNAMEs in the root will be
+  signed, the target, empty.as112.arpas is not. See <eref
   target="https://mailarchive.ietf.org/arch/msg/dnsop/JsPNz66aQE3-r3toawCV_ajoCNo">George
   Michaelson's message</eref>.</t>
 </section>
@@ -116,7 +117,8 @@ with a lot of meetings, reports by consultants and design teams.</t>
 </section>
 
 <section anchor="security" title="Security Considerations">
-<t>TODO: leaks, privacy. Copy from the AS112 RFC ?</t>
+<t>TODO: leaks, privacy. Copy from the section 9 of <xref
+target="RFC7534"/> ?</t>
 </section>
 
 <section title="Acknowledgments">
