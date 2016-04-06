@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY rfc2119 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY rfc2308 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.2308.xml">
+<!ENTITY rfc5936 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5936.xml">
+<!ENTITY rfc6347 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6347.xml">
+<!ENTITY rfc6604 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6604.xml">
+<!ENTITY rfc6761 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6761.xml">
+<!ENTITY rfc6762 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6762.xml">
+<!ENTITY rfc6973 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6973.xml">
+<!ENTITY rfc6982 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6982.xml">
+<!ENTITY rfc7534 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.7534.xml">
+<!ENTITY rfc7535 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7535.xml">
+<!ENTITY rfc7686 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7686.xml">
+<!ENTITY rfc7719 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7719.xml">
+<!ENTITY I-D.tldr-sutld-ps SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.tldr-sutld-ps">
+]>
+
+<rfc docName="draft-bortzmeyer-dname-root-00"
+     category="std" ipr="trust200902">
+<?rfc toc="yes"?>
+<?rfc strict="yes"?>
+<front>
+<title abbrev="DNAME in root">Using DNAME in the root for the
+delegation of special-use TLDs</title>
+<author fullname="Stephane Bortzmeyer" initials="S." surname="Bortzmeyer">
+<organization>AFNIC</organization>
+<address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
+</author>
+<date month="April" year="2016"/>
+<abstract>
+<t>This documents asks IANA to add DNAME records in the DNS root for
+TLDs which are in the Special-Use Domain Names registry, in order to ensure they receive an
+appropriate reply (NXDOMAIN) and that the root is not too bothered by them.</t>
+<t>REMOVE BEFORE PUBLICATION: there is no obvious place to discuss
+this document. May be the
+IETF DNSOP (DNS Operations) group, through its mailing list (the
+author reads it). Or may AS112 operators mailing lists? The
+source of the document, as well as a list of open issues, is currently
+kept <eref
+target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
+</abstract>
+</front>
+
+<middle>
+  <section anchor="intro" title="Introduction and background">
+    <t>The DNS root receives a lot of requests for TLDs which do not
+    exist. In the spirit of <xref target="RFC7534"/>, it would be good
+    if they could be redirected to a sink such as AS112, to save
+    root's resources. TODO references to one of the many DNS-OARC
+    talks about these junk requests.</t>
+     <t>Some of these names, and specially one of the biggest
+     offenders, .local (<xref target="RFC6762"/>), are registered in
+     the Special-Use Domain Names registry of <xref
+     target="RFC6761"/>. They are obvious candidates for a delegation to
+     the sink.</t>
+     <t>It is proposed to use the new AS112, the one described by
+     <xref target="RFC7535"/> to implement this sink.</t>
+     <t>TODO requires discussion with AS112 people</t>
+      <section title="Requirements Terminology">
+<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in <xref target="RFC2119"/>.</t>
+</section>
+  </section>
+
+  <section anchor="rules" title="Rules">
+    <t>Every TLD (<xref target="RFC7719"/>, section 2) which is in the
+    Special-Use Domain Names registry (<xref target="RFC6761"/>)
+    SHOULD be delegated by IANA through a DNAME to empty.as112.arpa as
+    described in <xref target="RFC7535"/> if and only if the
+    registration of these TLD say that resolvers should not or must
+    not look them up in the DNS.</t>
+   <t>It is important to notice that this document does not define a
+   policy to decide if a TLD should be delegated or not. Instead, it
+   relies on the existing Special-Use Domain Names registry and its
+   rules.</t>
+    <t>RFC-EDITOR: remove before publication. As of today, with these rules, .local (<xref target="RFC6762"/>)
+   or .onion (<xref
+    target="RFC7686"/>) would be delegated but not .example (its
+    registration in <xref target="RFC6761"/> does not define special
+    handling for resolvers) or .home or .belkin (which generate a huge
+    traffic at the root but are not in the Special-Use Domain Names registry.</t>
+  </section>
+
+<section anchor="benefits" title="Benefits">
+  <t>The main benefit is less load on the root and a better efficiency of the caches.</t>
+  <t>TODO mention RFC 6303?</t>
+</section>
+
+<section title="Possible issues">
+  <t>TODO support of DNAME (there is certainly a Geoff Huston survey
+  of DNAMEs in the wild).</t>
+</section>
+
+<section title="IANA Considerations">
+<t>IANA is requested (TODO what is the appropriate wording?) to add a
+DNAME in the root for every TLD which fits the rules of <xref
+target="rules"/>.</t>
+<t>RFC-EDITOR: remove before publication. There is currently no DNAME
+in the root. It is expected that the creation of the first one will
+require a top-down, multi-stakeholder, long and complicated process
+with a lot of meetings, reports by consultants and design teams.</t>
+</section>
+
+<section anchor="security" title="Security Considerations">
+<t>TODO: leaks, privacy. Copy from the AS112 RFC ?</t>
+</section>
+
+<section title="Acknowledgments">
+<t>Thanks to Paul Hoffman to say that it may be a good idea and for
+Ted Lemon to give the final impulse, with his <xref target="I-D.tldr-sutld-ps"/>.</t>
+</section>
+
+</middle>
+
+<back>
+
+<references title='Normative References'>
+&rfc2119;
+&rfc6761;
+&rfc7534;
+&rfc7535;
+&rfc7719;
+</references>
+
+<references title='Informative References'>
+&rfc6762;
+&rfc7686;  
+&I-D.tldr-sutld-ps;
+
+</references>
+
+</back>
+
+</rfc>
+
+
+
