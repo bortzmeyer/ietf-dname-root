@@ -56,7 +56,8 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
     <t>The DNS root receives a lot of requests for TLDs which do not
     exist. In the spirit of <xref target="RFC7534"/>, it would be good
     if they could be redirected to a sink such as AS112, to save
-    root's resources. TODO references to one of the many DNS-OARC
+    root's resources. See for instance <xref
+    target="fujiwara-root-traffic"/> or TODO find another reference to one of the many DNS-OARC
     talks about these junk requests.</t>
      <t>Some of these names, and specially one of the biggest
      offenders, .local (<xref target="RFC6762"/>), are registered in
@@ -65,7 +66,7 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
      the sink.</t>
      <t>It is proposed to use the new AS112, the one described by
      <xref target="RFC7535"/> to implement this sink.</t>
-     <t>TODO requires discussion with AS112 people</t>
+     <t>TODO requires discussion with AS112 people <eref target="https://lists.dns-oarc.net/mailman/listinfo/as112-ops"/></t>
       <section title="Requirements Terminology">
 <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -89,17 +90,22 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
     target="RFC7686"/>) would be delegated but not .example (its
     registration in <xref target="RFC6761"/> does not define special
     handling for resolvers) or .home or .belkin (which generate a huge
-    traffic at the root but are not in the Special-Use Domain Names registry.</t>
+    traffic at the root but are not in the Special-Use Domain Names registry).</t>
   </section>
 
 <section anchor="benefits" title="Benefits">
-  <t>The main benefit is less load on the root and a better efficiency of the caches.</t>
-  <t>TODO mention RFC 6303?</t>
+  <t>The main benefit is less load on the root and a better efficiency
+  of the caches, therefore helping the entire DNS ecosystem.</t>
 </section>
 
 <section title="Possible issues">
-  <t>TODO support of DNAME (there is certainly a Geoff Huston survey
-  of DNAMEs in the wild; there is also appendix A of <xref target="RFC7535"/>).</t>
+  <t>Of course, the solution described in this document requires a
+  good support of DNAME by the resolvers. Appendix A of <xref
+  target="RFC7535"/> describes an experiment which was run in 2013 and
+  which shows that, indeed, we can rely on DNAME (quoting the authors:
+  "We conclude that there is no evidence of a consistent
+   failure on the part of deployed DNS resolvers to correctly resolve a
+   DNAME construct.").</t>
   <t>TODO interaction with DNSSEC. The DNAMEs in the root will be
   signed, the target, empty.as112.arpas is not. See <eref
   target="https://mailarchive.ietf.org/arch/msg/dnsop/JsPNz66aQE3-r3toawCV_ajoCNo">George
@@ -117,8 +123,14 @@ with a lot of meetings, reports by consultants and design teams.</t>
 </section>
 
 <section anchor="security" title="Security Considerations">
-<t>TODO: leaks, privacy. Copy from the section 8 of <xref
-target="RFC7534"/> ?</t>
+<t>The requests for the TLD in the Special-Use Domain Names registry
+are typically NOT supposed to leak to the authoritative public name
+servers such as the ones of the root. If they do, it means a
+misconfiguration somewhere. The leak is independant on whether the name is delegated to AS112 or
+not. TODO: added risks because the queries will be seen by AS112
+servers which, unlike the root, are managed by many random people? See
+section 8 of <xref
+target="RFC7534"/> for an analysis.</t>
 </section>
 
 <section title="Acknowledgments">
@@ -142,6 +154,15 @@ Ted Lemon to give the final impulse, with his <xref target="I-D.tldr-sutld-ps"/>
 &rfc6762;
 &rfc7686;  
 &I-D.tldr-sutld-ps;
+
+<reference anchor="fujiwara-root-traffic" target="https://indico.dns-oarc.net/event/20/session/2/contribution/2/material/slides/4.pdf">
+  <front>
+    <title>2014 Root DITL Data analysis and TLD popularity analysis
+    (OARC workshop)</title>
+<author fullname="Kazunori Fujiwara" initials="" surname="Fujiwara"/>
+<date month="October" year="2014"/>
+</front>
+</reference>
 
 </references>
 
