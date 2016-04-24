@@ -20,12 +20,14 @@
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7534.xml">
 <!ENTITY rfc7535 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7535.xml">
 <!ENTITY rfc7686 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7686.xml">
-<!ENTITY rfc7719 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7719.xml">
+<!ENTITY rfc7719 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.7719.xml">
+<!ENTITY rfc7788 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7788.xml">
 <!ENTITY I-D.tldr-sutld-ps SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.tldr-sutld-ps">
 ]>
 
-<rfc docName="draft-bortzmeyer-dname-root-01"
+<rfc docName="draft-bortzmeyer-dname-root-02-BETA"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -36,7 +38,7 @@ delegation of special-use TLDs</title>
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="April" year="2016"/>
+<date month="TODO" year="TODO"/>
 <abstract>
 <t>This documents asks IANA to add DNAME records in the DNS root for
 TLDs which are in the Special-Use Domain Names registry, in order to ensure they receive an
@@ -66,7 +68,8 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
      the sink.</t>
      <t>It is proposed to use the new AS112, the one described by
      <xref target="RFC7535"/> to implement this sink.</t>
-     <t>TODO: results of the discussion with AS112 people</t>
+     <t>TODO: results of the discussion with AS112 people. The request
+     was sent 21 april 2016.</t>
      <section title="Requirements Terminology">
 <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -89,7 +92,7 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
    or .onion (<xref
     target="RFC7686"/>) would be delegated but not .example (its
     registration in <xref target="RFC6761"/> does not define special
-    handling for resolvers) or .home or .belkin (this last one generates a huge
+    handling for resolvers) or .home (<xref target="RFC7788"/>) or .belkin (this last one generates a huge
     traffic at the root but is not in the Special-Use Domain Names registry).</t>
   </section>
 
@@ -112,6 +115,11 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
   Michaelson's message</eref>. So, it will not be possible to validate
   the answers. Not a problem since these requests should never have
   been sent to the root, anyway.</t>
+  <t>RFC-EDITOR: remove before publication. As of today, it exists
+  apparently five nodes in the new AS112. There is no "official" delegation to
+  it. Do note that, as a consequence of the new AS122 structure, it is
+  not possible to see how many unofficial delegations exist (to see an
+  example, see junk.bortzmeyer.fr).</t>
 </section>
 
 <section title="IANA Considerations">
@@ -155,6 +163,7 @@ Ted Lemon to give the final impulse, with his <xref target="I-D.tldr-sutld-ps"/>
 <references title='Informative References'>
 &rfc6762;
 &rfc7686;  
+&rfc7788;
 &I-D.tldr-sutld-ps;
 
 <reference anchor="fujiwara-root-traffic" target="https://indico.dns-oarc.net/event/20/session/2/contribution/2/material/slides/4.pdf">
