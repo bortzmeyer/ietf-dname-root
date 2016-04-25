@@ -130,6 +130,10 @@ target="rules"/>.</t>
 in the root. It is expected that the creation of the first one will
 require a top-down, multi-stakeholder, long and complicated process
 with a lot of meetings, reports by consultants and design teams.</t>
+<t>TODO: if DNAMEs in the "real" root are delayed, is it
+possible/realistic for IANA to create an experimental root zone
+containing the new AS112 delegations, so that roots like Yeti could
+publish it and test it?</t>
 </section>
 
 <section anchor="security" title="Security Considerations">
