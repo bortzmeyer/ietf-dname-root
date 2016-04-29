@@ -25,6 +25,8 @@
 <!ENTITY rfc7788 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7788.xml">
 <!ENTITY I-D.tldr-sutld-ps SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.tldr-sutld-ps">
+<!ENTITY I-D.ietf-dnsop-nxdomain-cut SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-nxdomain-cut">
 ]>
 
 <rfc docName="draft-bortzmeyer-dname-root-02-BETA"
@@ -32,17 +34,16 @@
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
 <front>
-<title abbrev="DNAME in root">Using DNAME in the root for the
-delegation of special-use TLDs</title>
+<title abbrev="DNAME in root">Using DNAME in the DNS root zone for sinking of special-use TLDs</title>
 <author fullname="Stephane Bortzmeyer" initials="S." surname="Bortzmeyer">
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
 <date month="TODO" year="TODO"/>
 <abstract>
-<t>This documents asks IANA to add DNAME records in the DNS root for
+<t>This documents asks IANA to add DNAME records in the DNS root zone for
 TLDs which are in the Special-Use Domain Names registry, in order to ensure they receive an
-appropriate reply (NXDOMAIN) and that the root is not too bothered by them.</t>
+appropriate reply (NXDOMAIN) and that the root nameservers are not too bothered by them.</t>
 <t>REMOVE BEFORE PUBLICATION: there is no obvious place to discuss
 this document. May be the
 IETF DNSOP (DNS Operations) group, through its mailing list (the
@@ -55,21 +56,20 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
 
 <middle>
   <section anchor="intro" title="Introduction and background">
-    <t>The DNS root receives a lot of requests for TLDs which do not
+    <t>The DNS root nameservers receive a lot of requests for TLDs which do not
     exist. See for instance <xref
     target="fujiwara-root-traffic"/> or <xref
     target="icann-l-root-stats"/> or <xref target="ssac-045"/>. In the spirit of <xref target="RFC7534"/>, it would be good
     if they could be redirected to a sink such as AS112, to save
-    root's resources.</t>
+    root nameservers's resources.</t>
      <t>Some of these names, and specially one of the biggest
      offenders, .local (<xref target="RFC6762"/>), are registered in
      the <eref target="http://www.iana.org/assignments/special-use-domain-names/special-use-domain-names.xml">Special-Use Domain Names registry</eref> of <xref
-     target="RFC6761"/>. They are obvious candidates for a delegation to
+     target="RFC6761"/>. They are obvious candidates for a "delegation" to
      the sink.</t>
      <t>It is proposed to use the new AS112, the one described by
      <xref target="RFC7535"/> to implement this sink.</t>
-     <t>TODO: results of the discussion with AS112 people. The request
-     was sent 21 april 2016.</t>
+
      <section title="Requirements Terminology">
 <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -80,24 +80,24 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
   <section anchor="rules" title="Rules">
     <t>Every TLD (<xref target="RFC7719"/>, section 2) which is in the
     <eref target="http://www.iana.org/assignments/special-use-domain-names/special-use-domain-names.xml">Special-Use Domain Names registry</eref> (<xref target="RFC6761"/>)
-    SHOULD be delegated by IANA through a DNAME to empty.as112.arpa as
+    SHOULD be "delegated" by IANA through a DNAME to empty.as112.arpa as
     described in <xref target="RFC7535"/> if and only if the
-    registration of this TLD say that resolvers should not or must
-    not look them up in the DNS.</t>
+    registration of this TLD say that resolvers SHOULD NOT or MUST NOT
+    look them up in the DNS.</t>
    <t>It is important to notice that this document does not define a
    policy to decide if a TLD should be "delegated" or not. Instead, it
    relies on the existing Special-Use Domain Names registry and its
    rules.</t>
     <t>RFC-EDITOR: remove before publication. As of today, with these rules, .local (<xref target="RFC6762"/>)
    or .onion (<xref
-    target="RFC7686"/>) would be delegated but not .example (its
+    target="RFC7686"/>) would be "delegated" but not .example (its
     registration in <xref target="RFC6761"/> does not define special
     handling for resolvers) or .home (<xref target="RFC7788"/>) or .belkin (this last one generates a huge
-    traffic at the root but is not in the Special-Use Domain Names registry).</t>
+    traffic at the root nameservers but is not in the Special-Use Domain Names registry).</t>
   </section>
 
 <section anchor="benefits" title="Benefits">
-  <t>The main benefit is less load on the root and a better efficiency
+  <t>The main benefit is less load on the root nameservers and a better efficiency
   of the caches, therefore helping the entire DNS ecosystem.</t>
 </section>
 
@@ -108,48 +108,87 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
   which shows that, indeed, we can rely on DNAME (quoting the authors:
   "We conclude that there is no evidence of a consistent
    failure on the part of deployed DNS resolvers to correctly resolve a
-   DNAME construct.").</t>
-  <t>Regarding DNSSEC, do note the future DNAMEs in the root will be
+   DNAME construct."). The technical tests documented in <xref
+   target="damas-dname"/> have the same conclusion: DNAMEs work fine.</t>
+   <t>What could be the expected "saving" of resources by this
+   "delegation"? Well-behaved resolvers should cache the NXDOMAIN
+   (negative caching duration in the root zone is currently one day)
+   but this covers only the requested name, not the whole TLD (until
+   <xref target="I-D.ietf-dnsop-nxdomain-cut"/> is widely deployed and
+   it would only partially solved the issue). There
+   is also a concern that the requests for these non-existing TLDs are
+   not issued by "proper" systems (because they are supposed to never
+   leave the local network). If these requests are sent by badly
+   programmed or badly configured systems, can we be sure they will
+   honor the "delegation" and the caching? To summarise, it would be
+   interesting to design and conduct an experiment to measure the
+   expected effect. Ideas are welcome (the most obvious one, running a
+   "delegation" during a moment then deleting it and comparing the
+   results, is difficult to foresee, for political reasons).</t>
+   <t>To be sure AS112 could handle the load, AS 112 operators were
+   consulted<!-- 21 april 2016 --> and expressed no
+objection.</t>
+   <t>Regarding DNSSEC, do note the future DNAMEs in the root zone will be
   signed, but the target, empty.as112.arpa, is not. See <eref
   target="https://mailarchive.ietf.org/arch/msg/dnsop/JsPNz66aQE3-r3toawCV_ajoCNo">George
   Michaelson's message</eref>. So, it will not be possible to validate
   the answers. Not a problem since these requests should never have
-  been sent to the root, anyway.</t>
+  been sent to the root nameservers, anyway.</t>
   <t>RFC-EDITOR: remove before publication. As of today, it exists
-  apparently five nodes in the new AS112. There is no "official" delegation to
+  apparently five nodes in the new AS112. There is no "official" "delegation" to
   it. Do note that, as a consequence of the new AS122 structure, it is
-  not possible to see how many unofficial delegations exist (to see an
+  not possible to see how many unofficial "delegations" exist (to see an
   example, see junk.bortzmeyer.fr).</t>
 </section>
 
 <section title="IANA Considerations">
-<t>IANA is requested (TODO what is the appropriate wording?) to add a
-DNAME in the root for every TLD which fits the rules of <xref
+<t>IANA is directed to add a
+DNAME in the root zone for every TLD which fits the rules of <xref
 target="rules"/>.</t>
 <t>RFC-EDITOR: remove before publication. There is currently no DNAME
-in the root. It is expected that the creation of the first one will
-require a top-down, multi-stakeholder, long and complicated process
-with a lot of meetings, reports by consultants and design teams.</t>
-<t>TODO: if DNAMEs in the "real" root are delayed, is it
+in the root zone. It is expected that the creation of the first one
+will require a top-down, multi-stakeholder, long and complicated
+process with a lot of meetings, reports by consultants and design
+teams. We already have one short mention of this possibility in <xref
+target="ssac-009"/>, then one decision by ICANN <xref
+target="icann-idn-dname"/> to study the matter and one technical
+report made after that decision <xref target="damas-dname"/> ("This
+report found no failure in resolution nor in the ability to perform
+DNSSEC validation when DNAME was used in the root zone.")</t>
+<t>TODO: if DNAMEs in the "real" root zone are delayed, is it
 possible/realistic for IANA to create an experimental root zone
-containing the new AS112 delegations, so that roots like Yeti could
+containing the new AS112 "delegations", so that roots like Yeti could
 publish it and test it?</t>
+<t>REMOVE BEFORE PUBLICATION: there are today TLDs with a DNAME at their
+apex (not the same thing): xn--kprw13d and xn--mgba3a4f16a.</t>
 </section>
 
 <section anchor="security" title="Security Considerations">
 <t>The requests for the TLD in the Special-Use Domain Names registry
 are typically NOT supposed to leak to the authoritative public name
-servers such as the ones of the root. If they do, it means a
-misconfiguration somewhere. The leak is independant on whether the name is delegated to AS112 or
+servers such as the ones of the root zone. If they do, it means a
+misconfiguration somewhere. The leak is independant on whether the name is "delegated" to AS112 or
 not. See
 section 8 of <xref
-target="RFC7534"/> for an analysis. Some people believe there are added risks, because the queries will be seen by AS112
-servers which, unlike the root, are managed by many "random people".</t>
+target="RFC7534"/> for an analysis.</t>
+<t>Nevertheless, privacy considerations have to be taken into
+account. Some people believe there are added risks, because the
+queries will be seen by AS112 servers which, unlike the root
+nameservers, are managed by many "random people". This means that
+population of people who can see the query streams is increased from
+the set of root nameserver operators and people that they share data
+with, to potentially anybody. There's no defence against a malefactor
+hijacking AS112 traffic, because in a real sense that traffic is
+intended to be hijacked.</t>
 </section>
 
 <section title="Acknowledgments">
-<t>Thanks to Paul Hoffman to say that it may be a good idea and for
-Ted Lemon to give the final impulse, with his <xref target="I-D.tldr-sutld-ps"/>.</t>
+<t>Thanks to Paul Hoffman to say that it may be a good idea, for
+Patrik Faltstrom for documentation and research<!--
+https://www.ietf.org/mail-archive/web/dnsop/current/msg15957.html -->,
+for Joe Abley for tough proofreading and many suggestions, and for Ted
+Lemon to give the final impulse, with his <xref
+target="I-D.tldr-sutld-ps"/>.</t>
 </section>
 
 </middle>
@@ -169,6 +208,7 @@ Ted Lemon to give the final impulse, with his <xref target="I-D.tldr-sutld-ps"/>
 &rfc7686;  
 &rfc7788;
 &I-D.tldr-sutld-ps;
+&I-D.ietf-dnsop-nxdomain-cut;
 
 <reference anchor="fujiwara-root-traffic" target="https://indico.dns-oarc.net/event/20/session/2/contribution/2/material/slides/4.pdf">
   <front>
@@ -189,6 +229,15 @@ Ted Lemon to give the final impulse, with his <xref target="I-D.tldr-sutld-ps"/>
   </front>
 </reference>
 
+<reference anchor="ssac-009"
+	   target="http://www.icann.org/committees/security/alt-tlds-roots-report-31mar06.pdf">
+  <front>
+    <title>SAC 009 - Alternative TLD Name Systems and Roots: Conflict, Control and Consequences</title>
+    <author fullname="SSAC ICANN" surname="ICANN"/>
+    <date month="March" year="2006"/>
+  </front>
+</reference>
+
 <reference anchor="ssac-045"
 	   target="https://www.icann.org/en/groups/ssac/documents/sac-045-en.pdf">
   <front>
@@ -199,6 +248,26 @@ Ted Lemon to give the final impulse, with his <xref target="I-D.tldr-sutld-ps"/>
   </front>
 </reference>
 
+<reference anchor="damas-dname"
+	   target="https://www.icann.org/news/announcement-2011-05-24-en">
+	   <front>
+	     <title>Report on the Assessment of Security and Stability
+	     Implications of the Use of DNAME Resource Records in the
+	     Root Zone of the DNS</title>
+	     <author fullname="Joao Damas" initials="J." surname="Damas"/>
+	     <date month="May" year="2011"/>
+	   </front>
+</reference>
+
+<reference anchor="icann-idn-dname"
+	   target="https://www.icann.org/resources/board-material/resolutions-2010-03-12-en#10">
+  <front>
+    <title>Adopted Board Resolutions - IDN Variants</title>
+    <author fullname="ICANN" surname="ICANN"/>
+    <date month="March" year="2010"/>
+  </front>
+</reference>
+  
 </references>
 
 </back>
