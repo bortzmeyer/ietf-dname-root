@@ -29,7 +29,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-nxdomain-cut">
 ]>
 
-<rfc docName="draft-bortzmeyer-dname-root-03"
+<rfc docName="draft-bortzmeyer-dname-root-02"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
