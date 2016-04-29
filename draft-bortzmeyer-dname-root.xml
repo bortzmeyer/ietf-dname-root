@@ -29,7 +29,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-nxdomain-cut">
 ]>
 
-<rfc docName="draft-bortzmeyer-dname-root-02-BETA"
+<rfc docName="draft-bortzmeyer-dname-root-03"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -39,7 +39,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="TODO" year="TODO"/>
+<date month="April" year="2016"/>
 <abstract>
 <t>This documents asks IANA to add DNAME records in the DNS root zone for
 TLDs which are in the Special-Use Domain Names registry, in order to ensure they receive an
