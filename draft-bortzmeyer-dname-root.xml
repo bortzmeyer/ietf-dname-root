@@ -4,11 +4,17 @@
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY rfc2308 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2308.xml">
+<!ENTITY rfc5910 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.5910.xml">
+<!ENTITY rfc5731 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.5731.xml">
 <!ENTITY rfc5936 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5936.xml">
 <!ENTITY rfc6347 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6347.xml">
 <!ENTITY rfc6604 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6604.xml">
+<!ENTITY rfc6672 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6672.xml">
 <!ENTITY rfc6761 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6761.xml">
 <!ENTITY rfc6762 SYSTEM
@@ -23,13 +29,11 @@
 <!ENTITY rfc7719 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7719.xml">
 <!ENTITY rfc7788 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7788.xml">
-<!ENTITY I-D.tldr-sutld-ps SYSTEM
-"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.tldr-sutld-ps">
-<!ENTITY I-D.ietf-dnsop-nxdomain-cut SYSTEM
-"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-nxdomain-cut">
+<!ENTITY rfc8020 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8020.xml">
+<!ENTITY rfc8244 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8244.xml">
 ]>
 
-<rfc docName="draft-bortzmeyer-dname-root-03-BETA"
+<rfc docName="draft-bortzmeyer-dname-root-03"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -39,7 +43,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="TODO" year="TODO"/>
+<date month="December" year="2017"/>
 <abstract>
 <t>This documents asks IANA to add DNAME records in the DNS root zone for
 TLDs which are in the Special-Use Domain Names registry, in order to ensure they receive an
@@ -80,7 +84,8 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
   <section anchor="rules" title="Rules">
     <t>Every TLD (<xref target="RFC7719"/>, section 2) which is in the
     <eref target="http://www.iana.org/assignments/special-use-domain-names/special-use-domain-names.xml">Special-Use Domain Names registry</eref> (<xref target="RFC6761"/>)
-    SHOULD be "delegated" by IANA through a DNAME to empty.as112.arpa as
+    SHOULD be "delegated" by IANA through a DNAME (<xref
+    target="RFC6672"/>) to empty.as112.arpa as
     described in <xref target="RFC7535"/> if and only if the
     registration of this TLD say that resolvers SHOULD NOT or MUST NOT
     look them up in the DNS.</t>
@@ -109,12 +114,26 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
   "We conclude that there is no evidence of a consistent
    failure on the part of deployed DNS resolvers to correctly resolve a
    DNAME construct."). The technical tests documented in <xref
-   target="damas-dname"/> have the same conclusion: DNAMEs work fine.</t>
+   target="damas-dname"/> have the same conclusion: DNAMEs work
+  fine.</t>
+   <t>Currently, the root is managed both by ICANN and by Verisign,
+   with an EPP link between them. There is no EPP mapping for DNAME
+   "delegations", <xref target="RFC5731"/> does not envision this
+   case. At the very least, DNAME "delegation" would require a new
+   extension of <xref target="RFC5731"/>, may be getting inspiration
+   from <xref target="RFC5910"/>. Of course, it is expected that this
+   small technical problem is of little importance compared with the
+   "Internet governance" problem of having ICANN allowing such
+   DNAMEs (see <xref target="iana"/>).</t>
+   <t>Because DNAME require additional processing by the authoritative
+   servers (<xref target="RFC6672"/>, section 3.2), root name servers
+   operators may estimate that it will add an unknown risk for them (at
+   least, it will be more work for the server).</t>
    <t>What could be the expected "saving" of resources by this
    "delegation"? Well-behaved resolvers should cache the NXDOMAIN
    (negative caching duration in the root zone is currently one day)
    but this covers only the requested name, not the whole TLD (until
-   <xref target="I-D.ietf-dnsop-nxdomain-cut"/> is widely deployed and
+   <xref target="RFC8020"/> is widely deployed and
    it would only partially solved the issue). There
    is also a concern that the requests for these non-existing TLDs are
    not issued by "proper" systems (because they are supposed to never
@@ -138,10 +157,10 @@ objection.</t>
   apparently five nodes in the new AS112. There is no "official" "delegation" to
   it. Do note that, as a consequence of the new AS122 structure, it is
   not possible to see how many unofficial "delegations" exist (to see an
-  example, see junk.bortzmeyer.fr).</t>
+  example, see sink.bortzmeyer.fr).</t>
 </section>
 
-<section title="IANA Considerations">
+<section title="IANA Considerations" anchor="iana">
 <t>IANA is directed to add a
 DNAME in the root zone for every TLD which fits the rules of <xref
 target="rules"/>.</t>
@@ -190,7 +209,7 @@ Patrik Faltstrom for documentation and research<!--
 https://www.ietf.org/mail-archive/web/dnsop/current/msg15957.html -->,
 for Joe Abley for tough proofreading and many suggestions, and for Ted
 Lemon to give the final impulse, with his <xref
-target="I-D.tldr-sutld-ps"/>.</t>
+target="RFC8244"/>.</t>
 </section>
 
 </middle>
@@ -199,6 +218,7 @@ target="I-D.tldr-sutld-ps"/>.</t>
 
 <references title='Normative References'>
 &rfc2119;
+&rfc6672;
 &rfc6761;
 &rfc7534;
 &rfc7535;
@@ -206,11 +226,13 @@ target="I-D.tldr-sutld-ps"/>.</t>
 </references>
 
 <references title='Informative References'>
+&rfc5731;
+&rfc5910;  
 &rfc6762;
 &rfc7686;  
 &rfc7788;
-&I-D.tldr-sutld-ps;
-&I-D.ietf-dnsop-nxdomain-cut;
+&rfc8020;
+&rfc8244;
 
 <reference anchor="fujiwara-root-traffic" target="https://indico.dns-oarc.net/event/20/session/2/contribution/2/material/slides/4.pdf">
   <front>
