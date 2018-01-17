@@ -33,7 +33,7 @@
    'http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.bortzmeyer-regext-epp-dname'>
 ]>
 
-<rfc docName="draft-bortzmeyer-dname-root-04"
+<rfc docName="draft-bortzmeyer-dname-root-05"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -43,7 +43,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date day="16" month="January" year="2018"/>
+<date day="17" month="January" year="2018"/>
 <abstract>
 <t>This documents asks IANA to add DNAME records in the DNS root zone for
 TLDs which are in the Special-Use Domain Names registry, in order to ensure they receive an
@@ -106,7 +106,7 @@ target="https://github.com/bortzmeyer/ietf-dname-root">at Github</eref>.</t>
   of the caches, therefore helping the entire DNS ecosystem.</t>
 </section>
 
-<section title="Possible issues">
+<section title="Possible issues" anchor="issues">
   <t>Of course, the solution described in this document requires a
   good support of DNAME by the resolvers. Appendix A of <xref
   target="RFC7535"/> describes an experiment which was run in 2013 and
@@ -303,6 +303,34 @@ target="RFC8244"/>.</t>
   
 </references>
 
+<section title="Alternative without DNAME in the root">
+  <t>This alternative was drafted by John Levine. It works without
+  adding DNAME records in the root zone, which solves some of the issues
+  noted in <xref target="issues"/> and <xref target="iana"/>, but it
+  requires new IANA work: setting up new zones (and it still requires
+  changes in the root zone).</t>
+  <t>To delegate, say, .onion:</t>
+  <figure>
+    <artwork>
+onion. NS a.iana-servers.net.
+onion. NS b.iana-servers.net.
+onion. NS c.iana-servers.net.
+    </artwork>
+  </figure>
+  <t>And, in the tiny zone file hosted at *.iana-servers.net:</t>
+  <figure>
+    <artwork>
+onion. SOA whatever
+onion. NS a.iana-servers.net.
+onion. NS b.iana-servers.net.
+onion. NS c.iana-servers.net.
+onion. DNAME empty.as112.arpa.
+    </artwork>
+  </figure>
+  <t>It does not have exactly the same result as the main proposal, since a DNAME record
+  works only for names under it, not for the owner name itself.</t>
+</section>
+    
 </back>
 
 </rfc>
